@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REST Healthcare Medical Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#1a4fa8;--blue-light:#e8f0fc;--blue-mid:#3b6fd4;
+  --bg:#f4f7fb;--border:#dde3ef;--text:#1a2340;--muted:#64748b;
+  --success:#15803d;--success-bg:#dcfce7;
+  --danger:#dc2626;--danger-bg:#fee2e2;
+  --warn:#b45309;--warn-bg:#fef3c7;
+  --radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topbar{background:var(--blue);color:#fff;padding:0 14px;display:flex;align-items:center;gap:10px;min-height:58px;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(26,79,168,.25)}
+.topbar-title{flex:1}
+.topbar-title h1{font-family:'Playfair Display',serif;font-size:13px;font-weight:600;line-height:1.2}
+.topbar-title p{font-size:10px;opacity:.72}
+.user-pill{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 11px 4px 6px;display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;border:none;color:#fff;font-family:'DM Sans',sans-serif}
+.av{width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue)}
+.content{flex:1;padding:12px;max-width:900px;width:100%;margin:0 auto}
+.nav-tabs{display:flex;gap:4px;background:#fff;border-radius:var(--radius);padding:4px;margin-bottom:12px;box-shadow:0 1px 4px rgba(26,79,168,.07);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{flex:1;min-width:58px;padding:7px 2px;border:none;border-radius:8px;background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap;transition:.12s}
+.nav-tab.active{background:var(--blue);color:#fff}
+.card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin-bottom:11px}
+.card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px}
+.stat-box{background:var(--blue-light);border-radius:10px;padding:11px;text-align:center}
+.stat-val{font-size:22px;font-weight:600;color:var(--blue)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:1px}
+.btn{padding:8px 15px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.12s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-mid)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warn{background:#d97706;color:#fff}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--border)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-success{background:var(--success-bg);color:var(--success)}
+.badge-danger{background:var(--danger-bg);color:var(--danger)}
+.badge-warn{background:var(--warn-bg);color:var(--warn)}
+.badge-info{background:var(--blue-light);color:var(--blue)}
+.badge-gray{background:#f1f5f9;color:var(--muted)}
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--blue-light);color:var(--blue);font-weight:600;padding:8px 10px;text-align:left;font-size:11px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8faff}
+input,select,textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:#fff;outline:none;transition:.12s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bottom:3px}
+.form-group{margin-bottom:10px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.gps-box{background:#e8f0fc;border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--blue);margin-bottom:11px}
+.gps-dot{width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.clock-card{border:2px solid var(--blue);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:11px}
+.big-time{font-size:34px;font-weight:600;color:var(--blue);font-family:'Playfair Display',serif;letter-spacing:1px}
+.big-date{font-size:12px;color:var(--muted);margin-bottom:12px}
+.leave-card{border-left:3px solid var(--blue-mid);border-radius:8px;background:#f8faff;padding:11px 13px;margin-bottom:7px}
+.lc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.lc-type{font-size:13px;font-weight:500}
+.lc-meta{font-size:11px;color:var(--muted);margin-bottom:2px}
+.lc-reason{font-size:12px;color:var(--muted)}
+.av-circle{border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);flex-shrink:0}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.flex-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,20,60,.42);display:flex;align-items:flex-end;justify-content:center;z-index:200;padding:0}
+@media(min-width:500px){.modal-overlay{align-items:center;padding:16px}}
+.modal{background:#fff;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:440px;max-height:92vh;overflow-y:auto}
+@media(min-width:500px){.modal{border-radius:18px}}
+.modal-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(150deg,#1a4fa8 0%,#0ea5c9 100%)}
+.login-card{background:#fff;border-radius:20px;padding:26px;width:100%;max-width:340px}
+.login-logo{display:flex;flex-direction:column;align-items:center;gap:7px;margin-bottom:18px}
+.login-logo h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;text-align:center;line-height:1.3}
+.login-logo p{font-size:11px;color:var(--muted);text-align:center}
+.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
+.role-btn{padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--muted);text-align:center;transition:.12s}
+.role-btn.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.progress-bar{height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;border-radius:3px;transition:.3s}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#1a2340;color:#fff;border-radius:10px;padding:9px 18px;font-size:13px;z-index:300;box-shadow:0 4px 20px rgba(26,35,64,.35);max-width:310px;text-align:center;pointer-events:none}
+.section-lbl{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;margin:12px 0 7px}
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:13px;font-weight:500}
+.settings-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#d1d5db;border-radius:24px;cursor:pointer;transition:.2s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--blue)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
+.emp-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:13px;margin-bottom:9px}
+.pin-display{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;letter-spacing:3px;color:var(--blue);background:var(--blue-light);padding:4px 10px;border-radius:6px}
+.danger-zone{border:1.5px solid var(--danger-bg);border-radius:var(--radius);padding:14px;margin-top:10px}
+.danger-zone-title{font-size:13px;font-weight:600;color:var(--danger);margin-bottom:8px}
+.color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ══════════════════════════════════════════════════════
+//  PERSISTENT STORAGE  (localStorage so data survives refresh)
+// ══════════════════════════════════════════════════════
+function loadStorage(key,def){
+  try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}
+}
+function saveStorage(key,val){
+  try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+//  DEFAULT DATA
+// ══════════════════════════════════════════════════════
+const DEFAULT_SETTINGS={
+  centerName:'REST Healthcare Medical Center',
+  location:'Kot Najibullah, Haripur Hazara',
+  adminPin:'0000',
+  gpsLat:'33.9947',
+  gpsLng:'72.9100',
+  gpsLabel:'Kot Najibullah HMC',
+  workStartTime:'08:00',
+  workEndTime:'17:00',
+  leaveTypes:['Annual Leave','Sick Leave','Emergency Leave','Maternity Leave','Study Leave'],
+  annualLeaveQuota:12,
+  allowSelfClockout:true,
+  requireGPS:true,
+};
+const DEFAULT_USERS=[
+  {id:1,name:'Dr. Asif Khan',dept:'Surgery',pin:'1234',avatar:'AK',leaves:12,usedLeaves:3,role:'employee',active:true},
+  {id:2,name:'Nurse Fatima Bibi',dept:'Ward',pin:'2222',avatar:'NF',leaves:12,usedLeaves:5,role:'employee',active:true},
+  {id:3,name:'Dr. Sara Bibi',dept:'Pediatrics',pin:'4321',avatar:'SB',leaves:12,usedLeaves:2,role:'employee',active:true},
+  {id:4,name:'Mr. Hamid Ullah',dept:'Pharmacy',pin:'5678',avatar:'MH',leaves:12,usedLeaves:6,role:'employee',active:true},
+  {id:5,name:'Mr. Raza Shah',dept:'Reception',pin:'9999',avatar:'RS',leaves:12,usedLeaves:1,role:'employee',active:true},
+];
+const DEFAULT_LOGS=[
+  {uid:1,date:'2025-06-01',inTime:'08:02',outTime:'16:30',gps:'33.9947, 72.9100',status:'present'},
+  {uid:2,date:'2025-06-01',inTime:'08:15',outTime:'',gps:'33.9947, 72.9100',status:'present'},
+  {uid:3,date:'2025-06-01',inTime:'09:01',outTime:'17:00',gps:'33.9947, 72.9100',status:'present'},
+  {uid:1,date:'2025-05-31',inTime:'08:00',outTime:'16:00',gps:'33.9947, 72.9100',status:'present'},
+];
+const DEFAULT_LEAVES=[
+  {id:1,uid:1,type:'Sick Leave',from:'2025-06-10',to:'2025-06-12',days:3,reason:'Fever and flu',status:'approved',applied:'2025-06-01',note:''},
+  {id:2,uid:2,type:'Annual Leave',from:'2025-06-20',to:'2025-06-25',days:6,reason:'Family visit',status:'pending',applied:'2025-06-01',note:''},
+  {id:3,uid:4,type:'Annual Leave',from:'2025-07-01',to:'2025-07-10',days:10,reason:'Eid holidays',status:'pending',applied:'2025-06-01',note:''},
+];
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let S={
+  user:null,
+  tab:'home',
+  gpsLoc:'',
+  toast:'',
+  modal:null,          // which modal is open
+  modalData:{},        // data for the modal
+  settings:loadStorage('resthmc_settings',DEFAULT_SETTINGS),
+  users:loadStorage('resthmc_users',DEFAULT_USERS),
+  logs:loadStorage('resthmc_logs',DEFAULT_LOGS),
+  leaves:loadStorage('resthmc_leaves',DEFAULT_LEAVES),
+};
+function save(){
+  saveStorage('resthmc_settings',S.settings);
+  saveStorage('resthmc_users',S.users);
+  saveStorage('resthmc_logs',S.logs);
+  saveStorage('resthmc_leaves',S.leaves);
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function nowTime(){return new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function nowTimeShort(){return new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'});}
+function todayStr(){return new Date().toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
+function initials(name){return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');}
+function diffDays(a,b){return Math.max(1,Math.round((new Date(b)-new Date(a))/86400000)+1);}
+function getUser(uid){return S.users.find(u=>u.id===uid);}
+
+function shieldSVG(w,h){
+  return `<svg width="${w}" height="${h}" viewBox="0 0 100 115" fill="none">
+<path d="M50 5L95 26V62C95 87 75 107 50 112C25 107 5 87 5 62V26L50 5Z" fill="#1a4fa8"/>
+<path d="M50 5L95 26V62C95 87 75 107 50 112C25 107 5 87 5 62V26L50 5Z" fill="none" stroke="#5b8ee6" stroke-width="3"/>
+<text x="50" y="74" font-family="Georgia,serif" font-size="42" fill="white" text-anchor="middle" font-weight="bold">R</text>
+</svg>`;}
+
+// ══════════════════════════════════════════════════════
+//  RENDER ENGINE
+// ══════════════════════════════════════════════════════
+let clockInterval=null;
+function render(){
+  clearInterval(clockInterval);
+  const app=document.getElementById('app');
+  if(!S.user){app.innerHTML=loginHTML();return;}
+  app.innerHTML=frameHTML();
+  document.getElementById('tab-content').innerHTML=tabHTML();
+  if(S.modal)document.getElementById('modal-root').innerHTML=modalHTML();
+  clockInterval=setInterval(()=>{const el=document.getElementById('live-clock');if(el)el.textContent=nowTime();},1000);
+  if(S.toast){setTimeout(()=>{S.toast='';const t=document.getElementById('toast-el');if(t)t.remove();},2800);}
+}
+
+function frameHTML(){
+  const u=S.user;
+  const pending=S.leaves.filter(l=>l.status==='pending').length;
+  const tabs=[
+    {k:'home',i:'🏠',l:'Home'},
+    {k:'attendance',i:'🕐',l:'Time'},
+    {k:'leaves',i:'📅',l:'Leave'},
+    ...(u.role==='admin'?[
+      {k:'staff',i:'👥',l:'Staff'},
+      {k:'reports',i:'📊',l:'Reports'},
+      {k:'settings',i:'⚙️',l:'Settings'},
+    ]:[]),
+  ];
+  return `
+${S.toast?`<div class="toast" id="toast-el">${S.toast}</div>`:''}
+<div style="display:flex;flex-direction:column;min-height:100vh">
+  <div class="topbar">
+    ${shieldSVG(30,35)}
+    <div class="topbar-title">
+      <h1>${S.settings.centerName}</h1>
+      <p>${S.settings.location}</p>
+    </div>
+    ${u.role==='admin'&&pending>0?`<div style="background:#ef4444;color:#fff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700">${pending}⚠</div>`:''}
+    <button class="user-pill" onclick="logout()">
+      <div class="av">${initials(u.name)}</div>
+      <span>${u.name.split(' ')[0]}</span>
+    </button>
+  </div>
+  <div class="content">
+    <div class="nav-tabs">
+      ${tabs.map(t=>`<button class="nav-tab${S.tab===t.k?' active':''}" onclick="setTab('${t.k}')">${t.i}<span>${t.l}</span></button>`).join('')}
+    </div>
+    <div id="tab-content"></div>
+  </div>
+</div>
+<div id="modal-root"></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════
+let loginRole='employee';
+function loginHTML(){
+  const emps=S.users.filter(u=>u.active&&u.role==='employee');
+  return `<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      ${shieldSVG(52,60)}
+      <h2>${S.settings.centerName}</h2>
+      <p>${S.settings.location}</p>
+    </div>
+    <div class="section-lbl" style="margin-top:0">Sign in as</div>
+    <div class="role-picker">
+      <button class="role-btn selected" id="rb-emp" onclick="setLoginRole('employee')">👨‍⚕️<br>Employee</button>
+      <button class="role-btn" id="rb-adm" onclick="setLoginRole('admin')">🔐<br>Administrator</button>
+    </div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <select id="login-uid">
+        <option value="">— Select name —</option>
+        ${emps.map(u=>`<option value="${u.id}">${u.name} (${u.dept})</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>PIN</label>
+      <input type="password" id="login-pin" maxlength="8" placeholder="Enter your PIN" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div id="login-err" style="display:none;color:#dc2626;font-size:12px;background:#fee2e2;border-radius:6px;padding:6px 10px;margin-bottom:10px"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px" onclick="doLogin()">Sign In →</button>
+    <div style="font-size:11px;color:#94a3b8;margin-top:11px;text-align:center">Employee PIN: 1234 &nbsp;·&nbsp; Admin PIN: ${S.settings.adminPin}</div>
+  </div>
+</div>`;
+}
+function setLoginRole(r){
+  loginRole=r;
+  document.getElementById('rb-emp').className='role-btn'+(r==='employee'?' selected':'');
+  document.getElementById('rb-adm').className='role-btn'+(r==='admin'?' selected':'');
+  const sel=document.getElementById('login-uid');
+  if(r==='admin'){
+    sel.innerHTML='<option value="admin">Administrator</option>';
+  } else {
+    const emps=S.users.filter(u=>u.active&&u.role==='employee');
+    sel.innerHTML='<option value="">— Select name —</option>'+emps.map(u=>`<option value="${u.id}">${u.name} (${u.dept})</option>`).join('');
+  }
+}
+function doLogin(){
+  const pin=document.getElementById('login-pin').value.trim();
+  const err=document.getElementById('login-err');
+  if(loginRole==='admin'){
+    if(pin===S.settings.adminPin){
+      err.style.display='none';
+      S.user={id:0,name:'Administrator',role:'admin',dept:'Administration',avatar:'AD'};
+      S.tab='home';getGPS();render();
+    } else {err.style.display='block';err.textContent='Incorrect admin PIN.';}
+    return;
+  }
+  const uid=parseInt(document.getElementById('login-uid').value);
+  const u=S.users.find(u=>u.id===uid&&u.pin===pin&&u.active);
+  if(u){err.style.display='none';S.user=u;S.tab='home';getGPS();render();}
+  else{err.style.display='block';err.textContent='Incorrect PIN or user not found.';}
+}
+function logout(){S.user=null;S.tab='home';S.modal=null;render();}
+
+// ══════════════════════════════════════════════════════
+//  GPS
+// ══════════════════════════════════════════════════════
+function getGPS(){
+  S.gpsLoc=S.settings.gpsLat+'° N, '+S.settings.gpsLng+'° E';
+  if(S.settings.requireGPS&&navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      p=>{S.gpsLoc=p.coords.latitude.toFixed(4)+'° N, '+p.coords.longitude.toFixed(4)+'° E';},
+      ()=>{}
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  TABS ROUTER
+// ══════════════════════════════════════════════════════
+function tabHTML(){
+  switch(S.tab){
+    case 'home':return homeTab();
+    case 'attendance':return attendanceTab();
+    case 'leaves':return leavesTab();
+    case 'staff':return staffTab();
+    case 'reports':return reportsTab();
+    case 'settings':return settingsTab();
+  }
+  return '';
+}
+function setTab(t){S.tab=t;document.getElementById('tab-content').innerHTML=tabHTML();if(S.modal){S.modal=null;document.getElementById('modal-root').innerHTML='';}}
+
+// ══════════════════════════════════════════════════════
+//  HOME TAB
+// ══════════════════════════════════════════════════════
+function homeTab(){
+  const u=S.user;
+  const td=todayISO();
+  const todayLog=S.logs.find(l=>l.uid===u.id&&l.date===td);
+  const myLeaves=S.leaves.filter(l=>l.uid===u.id);
+  const presentToday=S.logs.filter(l=>l.date===td&&l.status==='present').length;
+  const pending=myLeaves.filter(l=>l.status==='pending').length;
+  const approved=myLeaves.filter(l=>l.status==='approved').length;
+  const balance=u.role==='admin'?'—':(u.leaves-u.usedLeaves);
+  return `
+<div class="clock-card">
+  <div class="big-time" id="live-clock">${nowTime()}</div>
+  <div class="big-date">${todayStr()}</div>
+  <div class="gps-box">
+    <div class="gps-dot"></div>
+    <span style="flex:1">${S.gpsLoc||S.settings.gpsLat+'° N, '+S.settings.gpsLng+'° E'} · ${S.settings.gpsLabel}</span>
+  </div>
+  ${u.role==='admin'?`<div class="badge badge-info" style="font-size:12px">👑 Admin — full access enabled</div>`
+  :todayLog?`
+    <div class="flex-row" style="justify-content:center;margin-bottom:11px">
+      <span class="badge badge-success">✓ In: ${todayLog.inTime}</span>
+      ${todayLog.outTime?`<span class="badge badge-info">Out: ${todayLog.outTime}</span>`:'<span class="badge badge-warn">Still on duty</span>'}
+    </div>
+    ${!todayLog.outTime?`<button class="btn btn-danger" style="width:100%;justify-content:center" onclick="doClockOut()">⏹ Clock Out</button>`
+    :`<div class="badge badge-gray">✓ Shift complete — see you tomorrow!</div>`}`
+  :`<button class="btn btn-success" style="width:100%;justify-content:center;padding:11px" onclick="doClockIn()">▶ Clock In — Start Shift</button>`}
+</div>
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-val">${balance}</div><div class="stat-lbl">Leave Balance</div></div>
+  <div class="stat-box"><div class="stat-val">${pending}</div><div class="stat-lbl">Pending Leaves</div></div>
+  <div class="stat-box"><div class="stat-val" style="color:${u.role==='admin'?'var(--success)':'var(--blue)'}">${u.role==='admin'?presentToday:approved}</div><div class="stat-lbl">${u.role==='admin'?'Present Today':'Approved'}</div></div>
+</div>
+${u.role==='employee'?`<div class="card">
+  <div class="card-title">📋 My Recent Leaves</div>
+  ${myLeaves.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:10px 0">No leave applications yet.</div>':
+    myLeaves.slice(-3).reverse().map(leaveCardHTML).join('')}
+  <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="setTab('leaves')">View All →</button>
+</div>`:''}
+${u.role==='admin'?`<div class="card">
+  <div class="card-title">⚡ Quick Actions</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button class="btn btn-outline" style="justify-content:center" onclick="setTab('leaves')">📅 Review Leaves</button>
+    <button class="btn btn-outline" style="justify-content:center" onclick="setTab('staff')">👥 Manage Staff</button>
+    <button class="btn btn-outline" style="justify-content:center" onclick="setTab('reports')">📊 View Reports</button>
+    <button class="btn btn-outline" style="justify-content:center" onclick="setTab('settings')">⚙️ Settings</button>
+  </div>
+</div>`:''}`;
+}
+
+function leaveCardHTML(l){
+  const colors={approved:'var(--success)',rejected:'var(--danger)',pending:'#1a4fa8'};
+  return `<div class="leave-card" style="border-left-color:${colors[l.status]||'#1a4fa8'}">
+    <div class="lc-head"><span class="lc-type">${l.type}</span><span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warn'}">${l.status}</span></div>
+    <div class="lc-meta">${l.from} → ${l.to} · ${l.days} day${l.days>1?'s':''}</div>
+    <div class="lc-reason">${l.reason}</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  ATTENDANCE TAB
+// ══════════════════════════════════════════════════════
+function attendanceTab(){
+  const u=S.user;
+  const isAdmin=u.role==='admin';
+  const logs=isAdmin?[...S.logs].reverse():[...S.logs].filter(l=>l.uid===u.id).reverse();
+  return `<div class="card">
+  <div class="flex-between" style="margin-bottom:11px">
+    <div class="card-title" style="margin-bottom:0">🕐 Attendance Log</div>
+    ${isAdmin?`<button class="btn btn-outline btn-sm" onclick="openExportModal()">⬇ Export</button>`:''}
+  </div>
+  ${isAdmin?`<div class="form-group"><select onchange="filterAttendance(this.value)" id="att-filter"><option value="all">All Staff</option>${S.users.filter(u=>u.active).map(u=>`<option value="${u.id}">${u.name}</option>`).join('')}</select></div>`:''}
+  <div class="table-wrap" id="att-table">
+    ${attendanceTable(logs,isAdmin)}
+  </div>
+</div>`;
+}
+function attendanceTable(logs,isAdmin){
+  if(logs.length===0)return '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">No records found.</div>';
+  return `<table>
+  <thead><tr>
+    ${isAdmin?'<th>Employee</th>':''}
+    <th>Date</th><th>In</th><th>Out</th><th>Hours</th><th>GPS</th><th>Status</th>
+    ${isAdmin?'<th></th>':''}
+  </tr></thead>
+  <tbody>${logs.map(l=>{
+    const emp=getUser(l.uid);
+    const hrs=l.inTime&&l.outTime?calcHours(l.inTime,l.outTime):'';
+    return `<tr>
+      ${isAdmin?`<td><div style="display:flex;align-items:center;gap:6px"><div class="av-circle" style="width:24px;height:24px;font-size:9px">${emp?initials(emp.name):'?'}</div>${emp?emp.name:'Unknown'}</div></td>`:''}
+      <td>${l.date}</td>
+      <td>${l.inTime||'—'}</td>
+      <td>${l.outTime||'<span style="color:var(--muted)">—</span>'}</td>
+      <td>${hrs?`<span style="font-size:12px;color:var(--success)">${hrs}h</span>`:'—'}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.gps||'—'}</td>
+      <td><span class="badge badge-${l.status==='present'?'success':'danger'}">${l.status}</span></td>
+      ${isAdmin?`<td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;padding:3px 8px" onclick="deleteLog('${l.uid}','${l.date}')">✕</button></td>`:''}
+    </tr>`;
+  }).join('')}</tbody></table>`;
+}
+function calcHours(inT,outT){
+  const [ih,im]=inT.split(':').map(Number);
+  const [oh,om]=outT.split(':').map(Number);
+  const mins=(oh*60+om)-(ih*60+im);
+  if(mins<=0)return '';
+  return (mins/60).toFixed(1);
+}
+function filterAttendance(v){
+  const logs=v==='all'?[...S.logs].reverse():[...S.logs].filter(l=>l.uid===parseInt(v)).reverse();
+  document.getElementById('att-table').innerHTML=attendanceTable(logs,true);
+}
+function deleteLog(uid,date){
+  if(!confirm('Delete this attendance record?'))return;
+  S.logs=S.logs.filter(l=>!(l.uid===parseInt(uid)&&l.date===date));
+  save();showToast('Record deleted.');setTab('attendance');
+}
+
+// ══════════════════════════════════════════════════════
+//  LEAVES TAB
+// ══════════════════════════════════════════════════════
+function leavesTab(){
+  const u=S.user;
+  const isAdmin=u.role==='admin';
+  const leaves=isAdmin?S.leaves:S.leaves.filter(l=>l.uid===u.id);
+  const pct=u.role==='employee'?Math.round((u.usedLeaves/u.leaves)*100):0;
+  return `
+<div class="flex-between" style="margin-bottom:11px">
+  <div style="font-size:14px;font-weight:600">Leave Applications</div>
+  <div style="display:flex;gap:7px">
+    ${!isAdmin?`<button class="btn btn-primary btn-sm" onclick="openLeaveModal()">+ Apply</button>`:''}
+    ${isAdmin?`<button class="btn btn-outline btn-sm" onclick="openAddLeaveAdmin()">+ Add Record</button>`:''}
+  </div>
+</div>
+${!isAdmin?`<div class="card">
+  <div class="card-title">Leave Balance</div>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:9px">
+    <div><div style="font-size:11px;color:var(--muted)">Entitled</div><div style="font-size:22px;font-weight:700;color:var(--blue)">${u.leaves}</div></div>
+    <div><div style="font-size:11px;color:var(--muted)">Used</div><div style="font-size:22px;font-weight:700;color:var(--danger)">${u.usedLeaves}</div></div>
+    <div><div style="font-size:11px;color:var(--muted)">Remaining</div><div style="font-size:22px;font-weight:700;color:var(--success)">${u.leaves-u.usedLeaves}</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>60?'#d97706':'#1a4fa8'}"></div></div>
+</div>`:''}
+${isAdmin?`<div class="card" style="padding:10px 13px;margin-bottom:10px">
+  <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <button class="btn btn-sm btn-outline" onclick="filterLeaves('all',this)">All</button>
+    <button class="btn btn-sm btn-outline" onclick="filterLeaves('pending',this)">⏳ Pending</button>
+    <button class="btn btn-sm btn-outline" onclick="filterLeaves('approved',this)">✓ Approved</button>
+    <button class="btn btn-sm btn-outline" onclick="filterLeaves('rejected',this)">✗ Rejected</button>
+  </div>
+</div>`:''}
+<div id="leaves-list">
+  ${leavesListHTML(leaves,isAdmin)}
+</div>`;
+}
+function leavesListHTML(leaves,isAdmin){
+  if(leaves.length===0)return '<div class="card" style="text-align:center;color:var(--muted);padding:22px 0">No leave applications.</div>';
+  return [...leaves].reverse().map(l=>{
+    const emp=getUser(l.uid);
+    const colors={approved:'var(--success)',rejected:'var(--danger)',pending:'#1a4fa8'};
+    return `<div class="leave-card" style="border-left-color:${colors[l.status]||'#1a4fa8'}">
+      <div class="lc-head">
+        <div>
+          ${isAdmin&&emp?`<div style="font-size:11px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:5px"><div class="av-circle" style="width:18px;height:18px;font-size:8px">${initials(emp.name)}</div>${emp.name} · ${emp.dept}</div>`:''}
+          <span class="lc-type">${l.type}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warn'}">${l.status}</span>
+          ${isAdmin?`<button class="btn btn-sm" style="background:#f1f5f9;color:var(--muted);padding:3px 7px" onclick="deleteLeave(${l.id})">✕</button>`:''}
+        </div>
+      </div>
+      <div class="lc-meta">${l.from} → ${l.to} · ${l.days} day${l.days>1?'s':''} · Applied ${l.applied}</div>
+      <div class="lc-reason">${l.reason}</div>
+      ${l.note?`<div style="font-size:11px;background:var(--blue-light);color:var(--blue);border-radius:5px;padding:4px 8px;margin-top:5px">💬 ${l.note}</div>`:''}
+      ${isAdmin&&l.status==='pending'?`
+      <div style="display:flex;gap:7px;margin-top:9px;flex-wrap:wrap">
+        <button class="btn btn-success btn-sm" onclick="openApproveModal(${l.id},'approved')">✓ Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="openApproveModal(${l.id},'rejected')">✗ Reject</button>
+        <button class="btn btn-outline btn-sm" onclick="openApproveModal(${l.id},'pending')">✏️ Add Note</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+function filterLeaves(status,btn){
+  const isAdmin=S.user.role==='admin';
+  const leaves=status==='all'?S.leaves:S.leaves.filter(l=>l.status===status);
+  document.getElementById('leaves-list').innerHTML=leavesListHTML(leaves,isAdmin);
+}
+function deleteLeave(id){
+  if(!confirm('Delete this leave application?'))return;
+  S.leaves=S.leaves.filter(l=>l.id!==id);
+  save();showToast('Leave deleted.');setTab('leaves');
+}
+
+// ══════════════════════════════════════════════════════
+//  STAFF TAB (Admin)
+// ══════════════════════════════════════════════════════
+function staffTab(){
+  const td=todayISO();
+  return `
+<div class="flex-between" style="margin-bottom:11px">
+  <div style="font-size:14px;font-weight:600">Staff Management</div>
+  <button class="btn btn-primary btn-sm" onclick="openAddStaffModal()">+ Add Staff</button>
+</div>
+${S.users.map(u=>{
+  const present=S.logs.find(l=>l.uid===u.id&&l.date===td&&l.status==='present');
+  const pendingL=S.leaves.filter(l=>l.uid===u.id&&l.status==='pending').length;
+  return `<div class="emp-card" style="${!u.active?'opacity:.55':''}">
+    <div style="display:flex;align-items:flex-start;gap:11px">
+      <div class="av-circle" style="width:42px;height:42px;font-size:14px;${!u.active?'background:#f1f5f9;color:#94a3b8':''}">${initials(u.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:14px">${u.name} ${!u.active?'<span class="badge badge-gray">Inactive</span>':''}</div>
+        <div style="font-size:12px;color:var(--muted)">${u.dept} · ${u.role}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">PIN: <span class="pin-display">${u.pin}</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">
+          <span class="badge badge-${present?'success':'danger'}">${present?'Present':'Absent'}</span>
+          <span class="badge badge-info">Leave: ${u.leaves-u.usedLeaves}/${u.leaves}</span>
+          ${pendingL>0?`<span class="badge badge-warn">${pendingL} pending</span>`:''}
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="openEditStaffModal(${u.id})">✏️ Edit</button>
+    </div>
+  </div>`;
+}).join('')}`;
+}
+
+// ══════════════════════════════════════════════════════
+//  REPORTS TAB (Admin)
+// ══════════════════════════════════════════════════════
+function reportsTab(){
+  const td=todayISO();
+  const activeUsers=S.users.filter(u=>u.active);
+  const presentToday=S.logs.filter(l=>l.date===td&&l.status==='present').length;
+  const absentToday=activeUsers.filter(u=>!S.logs.find(l=>l.uid===u.id&&l.date===td&&l.status==='present')).length;
+  const pending=S.leaves.filter(l=>l.status==='pending').length;
+  const approved=S.leaves.filter(l=>l.status==='approved').length;
+  const totalHours=S.logs.filter(l=>l.inTime&&l.outTime).reduce((s,l)=>s+parseFloat(calcHours(l.inTime,l.outTime)||0),0);
+  return `
+<div class="card-title" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:12px">📊 Reports Dashboard</div>
+<div class="stats-row" style="grid-template-columns:repeat(2,1fr)">
+  <div class="stat-box"><div class="stat-val" style="color:var(--success)">${presentToday}</div><div class="stat-lbl">Present Today</div></div>
+  <div class="stat-box"><div class="stat-val" style="color:var(--danger)">${absentToday}</div><div class="stat-lbl">Absent Today</div></div>
+  <div class="stat-box"><div class="stat-val">${pending}</div><div class="stat-lbl">Pending Leaves</div></div>
+  <div class="stat-box"><div class="stat-val" style="color:var(--success)">${approved}</div><div class="stat-lbl">Approved Leaves</div></div>
+</div>
+<div class="card">
+  <div class="card-title">Today's Attendance</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Employee</th><th>Dept</th><th>In</th><th>Out</th><th>Hours</th><th>Status</th></tr></thead>
+      <tbody>${activeUsers.map(u=>{
+        const log=S.logs.find(l=>l.uid===u.id&&l.date===td);
+        const hrs=log&&log.inTime&&log.outTime?calcHours(log.inTime,log.outTime):'';
+        return `<tr>
+          <td><div style="display:flex;align-items:center;gap:6px"><div class="av-circle" style="width:22px;height:22px;font-size:9px">${initials(u.name)}</div>${u.name}</div></td>
+          <td>${u.dept}</td>
+          <td>${log?.inTime||'—'}</td><td>${log?.outTime||'—'}</td>
+          <td>${hrs?hrs+'h':'—'}</td>
+          <td><span class="badge badge-${log&&log.status==='present'?'success':'danger'}">${log?.status||'absent'}</span></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">Leave Usage</div>
+  ${activeUsers.map(u=>{
+    const pct=Math.round((u.usedLeaves/u.leaves)*100);
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:13px;font-weight:500">${u.name}</span>
+        <span style="font-size:12px;color:var(--muted)">${u.usedLeaves}/${u.leaves} (${pct}%)</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>80?'#dc2626':pct>50?'#d97706':'#1a4fa8'}"></div></div>
+    </div>`;
+  }).join('')}
+</div>
+<div class="card">
+  <div class="card-title">Total Hours Logged</div>
+  <div style="font-size:28px;font-weight:700;color:var(--blue)">${totalHours.toFixed(1)}<span style="font-size:14px;color:var(--muted);margin-left:5px">hrs across all staff</span></div>
+</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  SETTINGS TAB (Admin)
+// ══════════════════════════════════════════════════════
+function settingsTab(){
+  const st=S.settings;
+  return `
+<div class="card-title" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:12px">⚙️ App Settings</div>
+
+<div class="card">
+  <div class="card-title">🏥 Centre Information</div>
+  <div class="form-group"><label>Centre Name</label><input id="s-name" value="${st.centerName}"/></div>
+  <div class="form-group"><label>Location / Address</label><input id="s-loc" value="${st.location}"/></div>
+  <button class="btn btn-primary btn-sm" onclick="saveCentreInfo()">Save Changes</button>
+</div>
+
+<div class="card">
+  <div class="card-title">📍 GPS / Location Settings</div>
+  <div class="form-row">
+    <div class="form-group"><label>Default Latitude</label><input id="s-lat" value="${st.gpsLat}" placeholder="e.g. 33.9947"/></div>
+    <div class="form-group"><label>Default Longitude</label><input id="s-lng" value="${st.gpsLng}" placeholder="e.g. 72.9100"/></div>
+  </div>
+  <div class="form-group"><label>Location Label</label><input id="s-gpslbl" value="${st.gpsLabel}"/></div>
+  <div class="settings-row">
+    <div><div class="settings-label">Capture live GPS on clock-in</div><div class="settings-desc">Uses device location when available</div></div>
+    <label class="toggle"><input type="checkbox" ${st.requireGPS?'checked':''} onchange="S.settings.requireGPS=this.checked;save()"><span class="toggle-slider"></span></label>
+  </div>
+  <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="saveGPSSettings()">Save GPS Settings</button>
+</div>
+
+<div class="card">
+  <div class="card-title">🕐 Work Hours</div>
+  <div class="form-row">
+    <div class="form-group"><label>Work Start Time</label><input type="time" id="s-start" value="${st.workStartTime}"/></div>
+    <div class="form-group"><label>Work End Time</label><input type="time" id="s-end" value="${st.workEndTime}"/></div>
+  </div>
+  <div class="form-group"><label>Annual Leave Quota (days/year)</label><input type="number" id="s-quota" value="${st.annualLeaveQuota}" min="1" max="60"/></div>
+  <button class="btn btn-primary btn-sm" onclick="saveWorkSettings()">Save Work Settings</button>
+</div>
+
+<div class="card">
+  <div class="card-title">📅 Leave Types</div>
+  <div id="leave-types-list">
+    ${st.leaveTypes.map((t,i)=>`<div style="display:flex;gap:7px;margin-bottom:7px">
+      <input value="${t}" id="lt-${i}" style="flex:1"/>
+      <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="removeLeaveType(${i})">✕</button>
+    </div>`).join('')}
+  </div>
+  <button class="btn btn-outline btn-sm" onclick="addLeaveType()" style="margin-top:4px">+ Add Type</button>
+  <button class="btn btn-primary btn-sm" style="margin-left:7px" onclick="saveLeaveTypes()">Save Types</button>
+</div>
+
+<div class="card">
+  <div class="card-title">🔐 Security</div>
+  <div class="form-group"><label>Admin PIN</label><input type="password" id="s-apin" value="${st.adminPin}" maxlength="8" placeholder="Enter new admin PIN"/></div>
+  <div class="form-group"><label>Confirm Admin PIN</label><input type="password" id="s-apin2" maxlength="8" placeholder="Confirm PIN"/></div>
+  <button class="btn btn-warn btn-sm" onclick="saveAdminPin()">🔒 Update Admin PIN</button>
+</div>
+
+<div class="card">
+  <div class="card-title">💾 Data Management</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-outline btn-sm" onclick="exportData()">⬇ Export All Data (JSON)</button>
+    <button class="btn btn-outline btn-sm" onclick="importDataPrompt()">⬆ Import Data</button>
+  </div>
+  <div class="danger-zone" style="margin-top:12px">
+    <div class="danger-zone-title">⚠ Danger Zone</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">These actions cannot be undone.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-danger btn-sm" onclick="resetAttendance()">Clear Attendance Logs</button>
+      <button class="btn btn-danger btn-sm" onclick="resetAll()">Factory Reset App</button>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── Settings save helpers ──────────────────────────────
+function saveCentreInfo(){
+  S.settings.centerName=document.getElementById('s-name').value.trim()||S.settings.centerName;
+  S.settings.location=document.getElementById('s-loc').value.trim()||S.settings.location;
+  save();showToast('Centre info saved!');render();
+}
+function saveGPSSettings(){
+  S.settings.gpsLat=document.getElementById('s-lat').value.trim()||S.settings.gpsLat;
+  S.settings.gpsLng=document.getElementById('s-lng').value.trim()||S.settings.gpsLng;
+  S.settings.gpsLabel=document.getElementById('s-gpslbl').value.trim()||S.settings.gpsLabel;
+  save();showToast('GPS settings saved!');
+}
+function saveWorkSettings(){
+  S.settings.workStartTime=document.getElementById('s-start').value||S.settings.workStartTime;
+  S.settings.workEndTime=document.getElementById('s-end').value||S.settings.workEndTime;
+  S.settings.annualLeaveQuota=parseInt(document.getElementById('s-quota').value)||S.settings.annualLeaveQuota;
+  save();showToast('Work settings saved!');
+}
+function saveLeaveTypes(){
+  const inputs=document.querySelectorAll('[id^="lt-"]');
+  S.settings.leaveTypes=[...inputs].map(i=>i.value.trim()).filter(Boolean);
+  save();showToast('Leave types saved!');setTab('settings');
+}
+function addLeaveType(){
+  S.settings.leaveTypes.push('New Leave Type');save();setTab('settings');
+}
+function removeLeaveType(i){
+  S.settings.leaveTypes.splice(i,1);save();setTab('settings');
+}
+function saveAdminPin(){
+  const p1=document.getElementById('s-apin').value;
+  const p2=document.getElementById('s-apin2').value;
+  if(!p1){showToast('Enter a PIN.');return;}
+  if(p1!==p2){showToast('PINs do not match!');return;}
+  if(p1.length<4){showToast('PIN must be at least 4 digits.');return;}
+  S.settings.adminPin=p1;save();showToast('Admin PIN updated!');
+}
+function exportData(){
+  const data={settings:S.settings,users:S.users,logs:S.logs,leaves:S.leaves};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='RESTHMC_backup_'+todayISO()+'.json';a.click();
+}
+function importDataPrompt(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=ev=>{
+      try{
+        const d=JSON.parse(ev.target.result);
+        if(d.users&&d.logs&&d.leaves&&d.settings){
+          S.users=d.users;S.logs=d.logs;S.leaves=d.leaves;S.settings=d.settings;
+          save();showToast('Data imported!');render();
+        } else showToast('Invalid backup file.');
+      }catch{showToast('Could not read file.');}
+    };r.readAsText(f);
+  };inp.click();
+}
+function resetAttendance(){
+  if(!confirm('Delete ALL attendance logs? This cannot be undone.'))return;
+  S.logs=[];save();showToast('Attendance cleared.');setTab('settings');
+}
+function resetAll(){
+  if(!confirm('FACTORY RESET: delete all data and restore defaults?'))return;
+  S.users=DEFAULT_USERS;S.logs=DEFAULT_LOGS;S.leaves=DEFAULT_LEAVES;S.settings=DEFAULT_SETTINGS;
+  save();showToast('App reset to defaults.');render();
+}
+
+// ══════════════════════════════════════════════════════
+//  CLOCK IN / OUT
+// ══════════════════════════════════════════════════════
+function doClockIn(){
+  const loc=S.gpsLoc||S.settings.gpsLat+'° N, '+S.settings.gpsLng+'° E';
+  const t=nowTimeShort();
+  S.logs.push({uid:S.user.id,date:todayISO(),inTime:t,outTime:'',gps:loc,status:'present'});
+  save();showToast('✓ Clocked in at '+t);setTab('home');
+}
+function doClockOut(){
+  const t=nowTimeShort();
+  S.logs=S.logs.map(l=>l.uid===S.user.id&&l.date===todayISO()&&!l.outTime?{...l,outTime:t}:l);
+  save();showToast('✓ Clocked out at '+t);setTab('home');
+}
+
+// ══════════════════════════════════════════════════════
+//  MODALS
+// ══════════════════════════════════════════════════════
+function modalHTML(){
+  switch(S.modal){
+    case 'leave':return leaveModalHTML();
+    case 'approve':return approveModalHTML();
+    case 'addStaff':return addStaffModalHTML();
+    case 'editStaff':return editStaffModalHTML();
+    case 'addLeaveAdmin':return addLeaveAdminHTML();
+  }
+  return '';
+}
+function openModal(name,data={}){S.modal=name;S.modalData=data;document.getElementById('modal-root').innerHTML=modalHTML();}
+function closeModal(){S.modal=null;S.modalData={};document.getElementById('modal-root').innerHTML='';}
+
+// — Leave Application Modal —
+function openLeaveModal(){openModal('leave',{type:S.settings.leaveTypes[0],from:todayISO(),to:todayISO(),reason:''});}
+function leaveModalHTML(){
+  const d=S.modalData;
+  const from=new Date(d.from||todayISO()),to=new Date(d.to||todayISO());
+  const days=diffDays(d.from||todayISO(),d.to||todayISO());
+  return `<div class="modal-overlay" onclick="if(event.target.className==='modal-overlay')closeModal()">
+  <div class="modal">
+    <div class="modal-title">📅 Apply for Leave</div>
+    <div class="form-group"><label>Leave Type</label>
+      <select onchange="S.modalData.type=this.value">
+        ${S.settings.leaveTypes.map(t=>`<option${t===d.type?' selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>From</label><input type="date" value="${d.from||todayISO()}" onchange="S.modalData.from=this.value;refreshLeaveModal()"/></div>
+      <div class="form-group"><label>To</label><input type="date" value="${d.to||todayISO()}" onchange="S.modalData.to=this.value;refreshLeaveModal()"/></div>
+    </div>
+    <div style="background:var(--blue-light);border-radius:7px;padding:7px 12px;font-size:13px;color:var(--blue);margin-bottom:10px">
+      Duration: <strong>${days} day${days>1?'s':''}</strong>
+    </div>
+    <div class="form-group"><label>Reason</label><textarea rows="3" placeholder="Brief reason..." onchange="S.modalData.reason=this.value">${d.reason||''}</textarea></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="submitLeave()">Submit</button>
+    </div>
+  </div>
+</div>`;
+}
+function refreshLeaveModal(){document.getElementById('modal-root').innerHTML=modalHTML();}
+function submitLeave(){
+  const d=S.modalData;
+  if(!d.reason||!d.reason.trim()){showToast('Please enter a reason.');return;}
+  const days=diffDays(d.from||todayISO(),d.to||todayISO());
+  S.leaves.push({id:Date.now(),uid:S.user.id,type:d.type,from:d.from||todayISO(),to:d.to||todayISO(),days,reason:d.reason,status:'pending',applied:todayISO(),note:''});
+  save();closeModal();showToast('Leave application submitted!');setTab('leaves');
+}
+
+// — Approve/Reject Modal —
+function openApproveModal(id,action){openModal('approve',{id,action,note:''});}
+function approveModalHTML(){
+  const d=S.modalData;
+  const leave=S.leaves.find(l=>l.id===d.id);
+  const isApprove=d.action==='approved';
+  const isReject=d.action==='rejected';
+  return `<div class="modal-overlay" onclick="if(event.target.className==='modal-overlay')closeModal()">
+  <div class="modal">
+    <div class="modal-title">${isApprove?'✓ Approve':isReject?'✗ Reject':'✏️ Add Note'} Leave</div>
+    <div class="leave-card" style="border-left-color:var(--blue);margin-bottom:12px">
+      <div class="lc-type">${leave.type}</div>
+      <div class="lc-meta">${leave.from} → ${leave.to} · ${leave.days} days</div>
+      <div class="lc-reason">${leave.reason}</div>
+    </div>
+    <div class="form-group"><label>Note / Comments (optional)</label><textarea rows="2" placeholder="Add a note for the employee..." onchange="S.modalData.note=this.value"></textarea></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+      <button class="btn ${isApprove?'btn-success':isReject?'btn-danger':'btn-primary'}" style="flex:1;justify-content:center" onclick="doApproveLeave()">
+        ${isApprove?'Approve':isReject?'Reject':'Save Note'}
+      </button>
+    </div>
+  </div>
+</div>`;
+}
+function doApproveLeave(){
+  const d=S.modalData;
+  S.leaves=S.leaves.map(l=>l.id===d.id?{...l,status:d.action,note:d.note||l.note}:l);
+  save();closeModal();showToast('Leave '+d.action+'!');setTab('leaves');
+}
+
+// — Add Staff Modal —
+function openAddStaffModal(){openModal('addStaff',{name:'',dept:'',pin:'',leaves:S.settings.annualLeaveQuota});}
+function addStaffModalHTML(){
+  const d=S.modalData;
+  return `<div class="modal-overlay" onclick="if(event.target.className==='modal-overlay')closeModal()">
+  <div class="modal">
+    <div class="modal-title">👤 Add New Staff Member</div>
+    <div class="form-group"><label>Full Name</label><input id="ns-name" value="${d.name}" placeholder="e.g. Dr. Ahmed Ali" onchange="S.modalData.name=this.value"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Department</label><input id="ns-dept" value="${d.dept}" placeholder="e.g. Surgery" onchange="S.modalData.dept=this.value"/></div>
+      <div class="form-group"><label>PIN (4–8 digits)</label><input type="number" id="ns-pin" value="${d.pin}" placeholder="e.g. 1234" onchange="S.modalData.pin=this.value"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Annual Leave Days</label><input type="number" id="ns-leaves" value="${d.leaves}" min="0" max="60" onchange="S.modalData.leaves=parseInt(this.value)"/></div>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="addStaff()">Add Staff</button>
+    </div>
+  </div>
+</div>`;
+}
+function addStaff(){
+  const d=S.modalData;
+  if(!d.name||!d.name.trim()){showToast('Enter a name.');return;}
+  if(!d.dept||!d.dept.trim()){showToast('Enter a department.');return;}
+  if(!d.pin||String(d.pin).length<4){showToast('PIN must be at least 4 digits.');return;}
+  if(S.users.find(u=>u.pin===String(d.pin))){showToast('This PIN is already in use!');return;}
+  const newId=Math.max(0,...S.users.map(u=>u.id))+1;
+  S.users.push({id:newId,name:d.name.trim(),dept:d.dept.trim(),pin:String(d.pin),avatar:initials(d.name),leaves:d.leaves||12,usedLeaves:0,role:'employee',active:true});
+  save();closeModal();showToast('Staff member added!');setTab('staff');
+}
+
+// — Edit Staff Modal —
+function openEditStaffModal(uid){const u=getUser(uid);if(!u)return;openModal('editStaff',{...u});}
+function editStaffModalHTML(){
+  const d=S.modalData;
+  return `<div class="modal-overlay" onclick="if(event.target.className==='modal-overlay')closeModal()">
+  <div class="modal">
+    <div class="modal-title">✏️ Edit Staff Member</div>
+    <div class="form-group"><label>Full Name</label><input id="es-name" value="${d.name}" onchange="S.modalData.name=this.value"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Department</label><input id="es-dept" value="${d.dept}" onchange="S.modalData.dept=this.value"/></div>
+      <div class="form-group"><label>PIN</label><input type="number" id="es-pin" value="${d.pin}" onchange="S.modalData.pin=String(this.value)"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Total Leave Days</label><input type="number" id="es-leaves" value="${d.leaves}" min="0" max="60" onchange="S.modalData.leaves=parseInt(this.value)"/></div>
+      <div class="form-group"><label>Used Leave Days</label><input type="number" id="es-used" value="${d.usedLeaves}" min="0" onchange="S.modalData.usedLeaves=parseInt(this.value)"/></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Account Active</div><div class="settings-desc">Inactive staff cannot log in</div></div>
+      <label class="toggle"><input type="checkbox" ${d.active?'checked':''} onchange="S.modalData.active=this.checked"><span class="toggle-slider"></span></label>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:12px">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEditStaff()">Save Changes</button>
+    </div>
+    <div class="danger-zone" style="margin-top:12px">
+      <div class="danger-zone-title">⚠ Remove Staff</div>
+      <button class="btn btn-danger btn-sm" onclick="removeStaff(${d.id})">Permanently Delete</button>
+    </div>
+  </div>
+</div>`;
+}
+function saveEditStaff(){
+  const d=S.modalData;
+  if(!d.name.trim()){showToast('Name cannot be empty.');return;}
+  if(String(d.pin).length<4){showToast('PIN must be at least 4 digits.');return;}
+  const dup=S.users.find(u=>u.pin===String(d.pin)&&u.id!==d.id);
+  if(dup){showToast('PIN already used by '+dup.name);return;}
+  S.users=S.users.map(u=>u.id===d.id?{...u,...d,avatar:initials(d.name)}:u);
+  save();closeModal();showToast('Staff updated!');setTab('staff');
+}
+function removeStaff(uid){
+  if(!confirm('Permanently remove this staff member and all their records?'))return;
+  S.users=S.users.filter(u=>u.id!==uid);
+  S.logs=S.logs.filter(l=>l.uid!==uid);
+  S.leaves=S.leaves.filter(l=>l.uid!==uid);
+  save();closeModal();showToast('Staff removed.');setTab('staff');
+}
+
+// — Admin Add Leave Record —
+function openAddLeaveAdmin(){openModal('addLeaveAdmin',{uid:S.users[0]?.id,type:S.settings.leaveTypes[0],from:todayISO(),to:todayISO(),reason:'',status:'approved'});}
+function addLeaveAdminHTML(){
+  const d=S.modalData;
+  const days=diffDays(d.from,d.to);
+  return `<div class="modal-overlay" onclick="if(event.target.className==='modal-overlay')closeModal()">
+  <div class="modal">
+    <div class="modal-title">📋 Add Leave Record</div>
+    <div class="form-group"><label>Employee</label>
+      <select onchange="S.modalData.uid=parseInt(this.value)">
+        ${S.users.filter(u=>u.active).map(u=>`<option value="${u.id}"${u.id===d.uid?' selected':''}>${u.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Leave Type</label>
+        <select onchange="S.modalData.type=this.value">
+          ${S.settings.leaveTypes.map(t=>`<option${t===d.type?' selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select onchange="S.modalData.status=this.value">
+          <option${d.status==='approved'?' selected':''}>approved</option>
+          <option${d.status==='pending'?' selected':''}>pending</option>
+          <option${d.status==='rejected'?' selected':''}>rejected</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>From</label><input type="date" value="${d.from}" onchange="S.modalData.from=this.value"/></div>
+      <div class="form-group"><label>To</label><input type="date" value="${d.to}" onchange="S.modalData.to=this.value"/></div>
+    </div>
+    <div class="form-group"><label>Reason</label><input placeholder="Reason..." onchange="S.modalData.reason=this.value" value="${d.reason}"/></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn btn-outline" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="adminAddLeave()">Add Record</button>
+    </div>
+  </div>
+</div>`;
+}
+function adminAddLeave(){
+  const d=S.modalData;
+  if(!d.reason.trim()){showToast('Enter a reason.');return;}
+  const days=diffDays(d.from,d.to);
+  S.leaves.push({id:Date.now(),uid:d.uid,type:d.type,from:d.from,to:d.to,days,reason:d.reason,status:d.status,applied:todayISO(),note:''});
+  save();closeModal();showToast('Leave record added!');setTab('leaves');
+}
+
+// — Export modal (stub) —
+function openExportModal(){exportData();showToast('Exporting data...');}
+
+// ══════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════
+function showToast(msg){
+  S.toast=msg;
+  const el=document.getElementById('toast-el');
+  if(el){el.textContent=msg;clearTimeout(el._t);el._t=setTimeout(()=>el.remove(),2800);}
+  else{
+    const t=document.createElement('div');
+    t.className='toast';t.id='toast-el';t.textContent=msg;
+    document.body.appendChild(t);
+    t._t=setTimeout(()=>t.remove(),2800);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
